@@ -1,8 +1,13 @@
 import random
 
 # ==== Generování náhodné mapy. ====
-mapa = list("████████████████████████████████OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-random.shuffle(mapa)
+# Podle mě nejjednodušší způsob jak vygenerovat 8*8 matci s 32 náhodně rozmístěnými nepřáteli je...
+# předdefinovat matici s 32 prázdnými místy ('█') a 32 nepřáteli ('O') a pomocí funkce random.shuffle() ji náhodně zamíchat.
+# Tento přístup má ovšem jednu nevýhodu: random.shuffle() neumí míchat vícedimenzionální matice.
+# Proto je nutné přeměnit 2D matici s rozměry 8*8 na 1D matici s rozměry 1*64, a jen předstírat že je 2D.
+# Indexování pak funguje takto: mat1D[x + y * 8] = mat2D[x][y] což znamená: mat1D[0...7] = mat2D[0][0...7], mat1D[8...15] = mat2D[1][0...7] atd.
+mapa = list("████████████████████████████████OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO") # Definice matice s rozměry 1*64.
+random.shuffle(mapa) # Zamíchání matice.
 # mapa.insert(0, '█')
 
 # ==== Definice globálních proměnných. ====
@@ -24,7 +29,7 @@ while True:
       hrdina.pozice[smer[0]] -= smer[1]
   else:
     navstiveno_policek += 1
-  policko = hrdina.pozice[0] * 8 + hrdina.pozice[1]
+  policko = hrdina.pozice[0] + hrdina.pozice[1] * 8
   if mapa[policko] == '█':
     mapa[policko] = '░'
   if mapa[policko] == 'O':
@@ -35,19 +40,19 @@ while True:
       if souperi[0].odolnost < random.randint(1, 20):
         souperi[0].zivoty -= random.random() * souperi[1].sila
       souperi[0], souperi[1] = souperi[1], souperi[0]
+    if zloun.zivoty <= 0:
+      porazeno_zlounu += 1
+      if porazeno_zlounu == 32:
+        print("HRDINA VYHRÁL!!! ƪ(˘⌣˘)ʃ")
+        mapa[policko] = '╬'
+      else:
+        mapa[policko] = 'Ø'
+        continue
+    elif hrdina.zivoty <= 0:
+      print("HRDINA PROHRÁL... ಥ╭╮ಥ")
+      mapa[policko] = '┼'
   else:
     continue
-  if zloun.zivoty <= 0:
-    porazeno_zlounu += 1
-    if porazeno_zlounu == 32:
-      print("HRDINA VYHRÁL!!! ƪ(˘⌣˘)ʃ")
-      mapa[policko] = '╬'
-    else:
-      mapa[policko] = 'Ø'
-      continue
-  elif hrdina.zivoty <= 0:
-    print("HRDINA PROHRÁL... ಥ╭╮ಥ")
-    mapa[policko] = '┼'
   break 
 
 # ==== Zobrazení mapy a statistik. ====
@@ -59,9 +64,9 @@ print("""==== VYSVĚTLIVKY ====
 O = zloun
 Ø = poražený zloun
 ==== MAPA ====""")
-for x in range(8):
-  for y in range(8):
-    print(mapa[x * 8 + y], end = ' ')
+for y in range(8):
+  for x in range(8):
+    print(mapa[x + y * 8], end = ' ')
   print()
 print("==== STATISTIKY ====")
 print("Počet navštívených políček: ", navstiveno_policek)
