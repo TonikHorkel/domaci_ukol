@@ -35,7 +35,7 @@ while True:
   # Tato podmínka zkontroluje zda se hrdina nedostal mimu mapu.
   # Funguje stejně jako: "if hrdina.pozice[smer[0]] < 0 or hrdina.pozice[smer[0]] > 7", jen udělá o operaci méně.
   # Operace x & 0xF (0xF je 0b1111 binárně) ponechá první 4 bity čísla x netknuté, zbytek bitů bude 0.
-  # To znamená, že pokud x by bylo 1-15, nezmění se, ale když bude negativní změní se na 16 + x.
+  # To znamená, že pokud by x bylo 0-15, nezmění se, ale když bude negativní změní se na 16 + x.
   # Např.: 5 & 0xF = 5, 8 & 0xF = 8, -1 & 0xF = 15 a -5 & 0xFF = 11.
   # Pokud se tedy hrdina dostane mimo mapu a hrdina.pozice[smer[0]] bude 8, tak 8 & 0xF = 8.
   # Pokud však hrdina.pozice[smer[0]] bude -1 (také mimo mapu), tak -1 & 0xF = 15.
