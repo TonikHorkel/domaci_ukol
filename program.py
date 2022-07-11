@@ -13,13 +13,15 @@ random.shuffle(mapa) # Zamíchání matice.
 # mapa.insert(0, '█')
 
 # ==== Definice globálních proměnných. ====
+# Hrdina a zloun budou instance této třídy.
 class chlapek:
+  # Pozice je důležitá jen u hrdiny, protože vždy existuje jen jeden zloun, nevadí že pozici také ukládá.
   pozice = random.sample(range(0, 7), 2) # [0, 0]
   def __init__(self, sila, zivoty, odolnost):
     self.sila = sila
     self.zivoty = zivoty
     self.odolnost = odolnost
-hrdina = chlapek(random.randint(1, 19), random.randint(100, 1000), random.randint(1, 19))
+hrdina = chlapek(random.randint(1, 19), random.randint(100, 1000), random.randint(1, 19)) # Hrdina má 100-1000 životy, místo zadaných 1-100.
 navstiveno_policek = 0
 porazeno_zlounu = 0
 
@@ -34,7 +36,7 @@ while True:
   policko = hrdina.pozice[0] + hrdina.pozice[1] * 8
   if mapa[policko] == '█':
     mapa[policko] = '░'
-  if mapa[policko] == 'O':
+  elif mapa[policko] == 'O':
     zloun = chlapek(random.randint(1, 19), random.randint(1, 100), random.randint(1, 19))
     souperi = [hrdina, zloun] # Opravdu nevím jak pojmenovat tuto proměnou.
     # random.shuffle(souperi) # Bez tohoto řádku bude vždy útočit nejdříve zloun.
@@ -53,11 +55,10 @@ while True:
     elif hrdina.zivoty <= 0:
       print("HRDINA PROHRÁL... ಥ╭╮ಥ")
       mapa[policko] = '┼'
-  else:
-    continue
-  break 
+    break 
 
 # ==== Zobrazení mapy a statistik. ====
+# Tohle je snad vše jasné.
 print("""==== VYSVĚTLIVKY ====
 █ = prázdné pole
 ░ = prázdné pole, které navštívil hrdina
