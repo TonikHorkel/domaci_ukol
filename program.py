@@ -16,6 +16,7 @@ random.shuffle(mapa) # Zamíchání matice.
 # Hrdina a zloun budou instance této třídy.
 class chlapek:
   # Pozice je důležitá jen u hrdiny, protože vždy existuje jen jeden zloun, nevadí že pozici také ukládá.
+  # Hrdina začíná na náhodných souřadnicích ne na zadaných (0, 0).
   pozice = random.sample(range(0, 7), 2) # [0, 0]
   def __init__(self, sila, zivoty, odolnost):
     self.sila = sila
@@ -27,32 +28,45 @@ porazeno_zlounu = 0
 
 # ==== Hlavní herní smyčka. ====
 while True:
+  # Směr je náhodná 1*2 matice, kde 1. element je po jaké ose se bude hrdina pohybovat (0 = x, 1 = y) a...
+  # 2. element je jestli se bude pohybovat k mínusu nebo k plusu.
   smer = random.choice([[0, -1], [0, 1], [1, -1], [1, 1]])
   hrdina.pozice[smer[0]] += smer[1]
+  # Tato podmínka zkontroluje zda se hrdina nedostel mimu mapu.
+  # Funguje stejně jako: "if hrdina.pozice[smer[0]] < 0 or hrdina.pozice[smer[0]] > 7", jen udělá o operaci méně.
+  # (Opravdu se mi nechce vysvětlovat jak to přesně funguje.)
   if hrdina.pozice[smer[0]] & 0xFFFFFFFF > 7:
-      hrdina.pozice[smer[0]] -= smer[1]
+      hrdina.pozice[smer[0]] -= smer[1] # Vrácení hrdiny zpět na mapu.
   else:
     navstiveno_policek += 1
-  policko = hrdina.pozice[0] + hrdina.pozice[1] * 8
+  policko = hrdina.pozice[0] + hrdina.pozice[1] * 8 # Viz řádek 8.
   if mapa[policko] == '█':
+    # Hrdina se dostal na prázdné políčko.
     mapa[policko] = '░'
   elif mapa[policko] == 'O':
-    zloun = chlapek(random.randint(1, 19), random.randint(1, 100), random.randint(1, 19))
-    souperi = [hrdina, zloun] # Opravdu nevím jak pojmenovat tuto proměnou.
+    # Hrdina se dostal na políčko se zlounem.
+    zloun = chlapek(random.randint(1, 19), random.randint(1, 100), random.randint(1, 19)) # Generování vlastností zlouna.
+    # souperi = [obránce, útočník]
+    souperi = [hrdina, zloun] # (Opravdu nevím jak pojmenovat tuto proměnou.)
     # random.shuffle(souperi) # Bez tohoto řádku bude vždy útočit nejdříve zloun.
+    # Smyčka, která běží dokud nezemře buď hrdina nebo zloun.
     while hrdina.zivoty * zloun.zivoty > 0:
+      # Boj.
       if souperi[0].odolnost < random.randint(1, 20):
         souperi[0].zivoty -= random.random() * souperi[1].sila
-      souperi[0], souperi[1] = souperi[1], souperi[0]
+      souperi[0], souperi[1] = souperi[1], souperi[0] # Obránce se stává útocňíkem a útočník obráncem. 
     if zloun.zivoty <= 0:
+      # Zloun byl poražen.
       porazeno_zlounu += 1
       if porazeno_zlounu == 32:
+        # Hrdina porazil všech 32 zlounů.
         print("HRDINA VYHRÁL!!! ƪ(˘⌣˘)ʃ")
         mapa[policko] = '╬'
       else:
         mapa[policko] = 'Ø'
         continue
     elif hrdina.zivoty <= 0:
+      # Hrdina byl poražen.
       print("HRDINA PROHRÁL... ಥ╭╮ಥ")
       mapa[policko] = '┼'
     break 
