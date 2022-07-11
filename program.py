@@ -47,6 +47,7 @@ while True:
   policko = hrdina.pozice[0] + hrdina.pozice[1] * 8 # Viz řádek 8.
   if mapa[policko] == '█':
     # Hrdina se dostal na prázdné políčko.
+    # navstiveno_policek += 1
     mapa[policko] = '░'
   elif mapa[policko] == 'O':
     # Hrdina se dostal na políčko se zlounem.
