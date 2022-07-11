@@ -32,7 +32,7 @@ while True:
   # 2. element je jestli se bude pohybovat k mínusu nebo k plusu.
   smer = random.choice([[0, -1], [0, 1], [1, -1], [1, 1]])
   hrdina.pozice[smer[0]] += smer[1]
-  # Tato podmínka zkontroluje zda se hrdina nedostel mimu mapu.
+  # Tato podmínka zkontroluje zda se hrdina nedostal mimu mapu.
   # Funguje stejně jako: "if hrdina.pozice[smer[0]] < 0 or hrdina.pozice[smer[0]] > 7", jen udělá o operaci méně.
   # (Opravdu se mi nechce vysvětlovat jak to přesně funguje.)
   if hrdina.pozice[smer[0]] & 0xFFFFFFFF > 7:
@@ -46,8 +46,7 @@ while True:
   elif mapa[policko] == 'O':
     # Hrdina se dostal na políčko se zlounem.
     zloun = chlapek(random.randint(1, 19), random.randint(1, 100), random.randint(1, 19)) # Generování vlastností zlouna.
-    # souperi = [obránce, útočník]
-    souperi = [hrdina, zloun] # (Opravdu nevím jak pojmenovat tuto proměnou.)
+    souperi = [hrdina, zloun] # souperi = [obránce, útočník]
     # random.shuffle(souperi) # Bez tohoto řádku bude vždy útočit nejdříve zloun.
     # Smyčka, která běží dokud nezemře buď hrdina nebo zloun.
     while hrdina.zivoty * zloun.zivoty > 0:
